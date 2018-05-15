@@ -1,5 +1,4 @@
 import { observable, action, computed, runInAction } from 'mobx';
-import { fromPromise } from 'mobx-utils';
 
 import config from '../config';
 
