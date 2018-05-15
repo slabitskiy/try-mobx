@@ -53,10 +53,10 @@ class Home extends React.Component {
 				<ul className="list-group" style={{ marginTop: 20 }}>
 				{
 					todos.todos.map(el => (
-						<li className="list-group-item" key={el.id}>
+						<li className={`list-group-item ${el.completed ? 'active' : '' }`} key={el.id}>
 							{el.title}
 							<div className="float-right">
-								<input type="checkbox" class="form-check-input" />
+								<input type="checkbox" class="form-check-input" checked={el.completed} />
 							</div>
 						</li>
 					))
