@@ -2,5 +2,8 @@
 const url = 'https://jsonplaceholder.typicode.com/';
 
 export default {
-	BASE: `${url}todos`
+	TODOS: {
+		base: `${url}todos`,
+		withId: id => `${url}todos/${id}`
+	}
 };

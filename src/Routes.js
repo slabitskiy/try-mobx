@@ -9,7 +9,7 @@ import store from './stores';
 
 const Routes = () => (
 	<App>
-		<Provider store={store}>
+		<Provider {...store}>
 			<BrowserRouter>
 				<Switch>
 					<Route path='/' component={Home} exact />

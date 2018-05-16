@@ -1,13 +1,13 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
+import TodoView from './components/TodoView';
 
-@inject('store')
-@observer
+@observer(['Todos'])
 class Home extends React.Component {
 	state = {}
 
 	componentWillMount() {
-		this.props.store.Todos.getTodos();
+		this.props.Todos.getTodos();
 	}
 
 	inputChangeHandl = (e) => {
@@ -18,7 +18,7 @@ class Home extends React.Component {
 	createTodo = (e) => {
 		e.preventDefault();
 
-		this.props.store.Todos.addTodo(this.state);
+		this.props.Todos.addTodo(this.state);
 
 		this.setState({
 			'title': '',
@@ -26,8 +26,12 @@ class Home extends React.Component {
 		});
 	}
 
+	onCompleteHandl = (id) => () => {
+		this.props.Todos.makeCheck(id);
+	}
+
 	render() {
-		const { store: { Todos: todos }} = this.props;
+		const {  Todos: todos } = this.props;
 
 		return (
 			<div className="container">
@@ -39,27 +43,22 @@ class Home extends React.Component {
 							required
 						/>
 					</div>
-					<div className="form-group">
+					{/* <div className="form-group">
 						<input name="text"
 							value={this.state.text || ''}
 							onChange={this.inputChangeHandl}
 							required
 						/>
-					</div>
+					</div> */}
 					<button className="btn btn-primary">
 						Create todo
 					</button>
 				</form>
 				<ul className="list-group" style={{ marginTop: 20 }}>
 				{
-					todos.todos.map(el => (
-						<li className={`list-group-item ${el.completed ? 'active' : '' }`} key={el.id}>
-							{el.title}
-							<div className="float-right">
-								<input type="checkbox" class="form-check-input" checked={el.completed} />
-							</div>
-						</li>
-					))
+					todos.todos.map(todo => 
+						<TodoView todo={todo} key={todo.id} onComplete={this.onCompleteHandl(todo.id)} />
+					)
 				}
 				</ul>
 		   </div>
