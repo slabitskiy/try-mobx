@@ -26,8 +26,8 @@ class Home extends React.Component {
 		});
 	}
 
-	onCompleteHandl = (id) => () => {
-		this.props.Todos.makeCheck(id);
+	onCompleteHandl = (todo) => () => {
+		todo.makeCompleted();
 	}
 
 	render() {
@@ -37,19 +37,15 @@ class Home extends React.Component {
 			<div className="container">
 				<form onSubmit={this.createTodo}>
 					<div className="form-group">
+						<label for="exampleInputEmail1">Email address</label>
 						<input name="title"
+							id="exampleInputEmail1"
+							class="form-control" 
 							value={this.state.title || ''}
 							onChange={this.inputChangeHandl}
 							required
 						/>
 					</div>
-					{/* <div className="form-group">
-						<input name="text"
-							value={this.state.text || ''}
-							onChange={this.inputChangeHandl}
-							required
-						/>
-					</div> */}
 					<button className="btn btn-primary">
 						Create todo
 					</button>
@@ -57,7 +53,7 @@ class Home extends React.Component {
 				<ul className="list-group" style={{ marginTop: 20 }}>
 				{
 					todos.todos.map(todo => 
-						<TodoView todo={todo} key={todo.id} onComplete={this.onCompleteHandl(todo.id)} />
+						<TodoView todo={todo} key={todo.todo.id} onComplete={this.onCompleteHandl(todo)} />
 					)
 				}
 				</ul>

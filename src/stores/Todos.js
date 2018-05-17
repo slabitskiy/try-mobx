@@ -1,6 +1,7 @@
 import { observable, action, computed, runInAction } from 'mobx';
 
 import config from '../config';
+import Todo from './Todo';
 
 class Todos {
 	@observable todos = [];
@@ -15,7 +16,7 @@ class Todos {
 			const resp = await api.json();
 
 			runInAction(() => {
-				this.todos.push({ ...resp, ...todo})				
+				this.todos.push(new Todo({ ...resp, ...todo}))				
 			});
 		} catch (error) {
 			console.log(error.message)
@@ -32,34 +33,10 @@ class Todos {
 			const todos = await api.json();
 
 			runInAction(() => {
-				this.todos = todos;
-			})
+				this.todos = todos.map(todo => new Todo(todo));
+			});
 		} catch (err) {
 			console.log(err.message)
-		}
-	}
-
-	@action makeCheck = async (_id) => {
-		const index = this.todos.findIndex(el => el.id === _id);
-
-		try {
-			const api = await fetch(config.TODOS.withId(_id), {
-				method: 'PUT',
-				body: JSON.stringify({
-					id: _id,
-					completed: true
-				}),
-				headers: {
-				  "Content-type": "application/json; charset=UTF-8"
-				}
-			});
-			const resp = await api.json();
-
-			runInAction(() => {
-				this.todos[index].completed = !this.todos[index].completed;				
-			});
-		} catch (error) {
-			console.log(error.message)
 		}
 	}
 }

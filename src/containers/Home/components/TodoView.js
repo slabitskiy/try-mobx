@@ -1,12 +1,14 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-
+import './style.css'
 @observer
 class TodoView extends React.Component {
 	render() {
-		const {todo} = this.props; 
+		const { todo: { todo, isLoading } } = this.props; 
 		return (
-			<li className={`list-group-item ${todo.completed ? 'active' : '' }`}
+			<li className={
+				`list-group-item ${todo.completed ? 'active' : '' } ${isLoading ? '-loading' : ''}` 
+				}
 				onClick={this.props.onComplete}
 			>
 				{todo.title}
