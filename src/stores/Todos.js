@@ -1,45 +1,38 @@
-import { observable, action, computed, runInAction } from 'mobx';
-
-import config from '../config';
+import { types, flow } from 'mobx-state-tree';
 import Todo from './Todo';
 
-class Todos {
-	@observable todos = [];
+import config from 'config';
 
-	@action addTodo = async (todo) => {
+const Todos = types.model('Todos', {
+	todos: types.array(Todo)
+}).actions(self => ({
+	getTodos: flow(function* fetchTodos() {
 		try {
-			const api = await fetch(config.TODOS.base, {
+			const api = yield fetch(config.TODOS.base);
+			const todos = yield api.json();
+
+			self.todos = todos;
+		} catch (err) {
+			console.log(err.message)
+		}
+	}),
+	addTodo: flow(function* createTodo(todo){
+		try {
+			const api = yield fetch(config.TODOS.base, {
 				method: 'POST',
 				body: JSON.stringify(todo)
 			});
 
-			const resp = await api.json();
+			const resp = yield api.json();
 
-			runInAction(() => {
-				this.todos.push(new Todo({ ...resp, ...todo}))				
-			});
+			self.todos.push({ ...resp, ...todo});				
 		} catch (error) {
 			console.log(error.message)
 		}
-	}
+	})
+}))
+.create({
+	todos: []
+});
 
-	@computed get getTodos() {
-		return this.todos;
-	}
-
-	@action getTodos = async () => {
-		try {
-			const api = await fetch(config.TODOS.base);
-			const todos = await api.json();
-
-			runInAction(() => {
-				this.todos = todos.map(todo => new Todo(todo));
-			});
-		} catch (err) {
-			console.log(err.message)
-		}
-	}
-}
-
-
-export default new Todos();
+export default Todos;
